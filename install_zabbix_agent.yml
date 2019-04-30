@@ -1,0 +1,82 @@
+# Установка zabbix-agent на ОС Ubuntu 14/16/18 
+---
+- hosts: all
+  become: yes
+  vars:
+    source_file: /Users/7bit/Documents/repo/Zabbix/lxc_template/zabbix_container.conf
+    destin_file: /etc/zabbix/zabbix_agentd.d/zabbix_container.conf 
+    
+  tasks:
+  - name: Check and Print LINUX Version
+    debug: var=ansible_os_family
+
+  - block: # ======== Block for RedHat =========
+      #- name: Install epel repo
+      #  yum: name=epel-release state=installed
+
+      #- name: Install zabbix_agent for RedHat
+      #  yum: name=zabbix-agent state=installed update_cache=yes
+
+      #- name: install zabbix-agent
+      #  yum: name=zabbix22-agent state=latest
+
+
+      #- name: Copy file for RedHat
+      #  copy: #src={{ source_file }} dest={{ destin_file }} mode=0644
+      #  notify: 
+      #      - restart zabbix_agent
+    #when: ansible_os_family == "RedHat"
+
+  - block: # ======== Block for Debian/Ubuntu =========    
+      - name: Download Zabbix Ubuntu 14 (Trusty) release deb file
+        get_url: 
+          url="http://repo.zabbix.com/zabbix/3.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_3.4-1+trusty_all.deb"
+          dest="/tmp/zabbix-release_3.4-1.deb"
+        when: ansible_os_family == "Debian" and ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 14
+
+      - name: Download Zabbix Ubuntu 16 (Xenial) release deb file
+        get_url: 
+          url="http://repo.zabbix.com/zabbix/3.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_3.4-1+xenial_all.deb"
+          dest="/tmp/zabbix-release_3.4-1.deb"
+        when: ansible_os_family == "Debian" and ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 16
+
+      - name: Download Zabbix Ubuntu 18 (bionic) release deb file
+        get_url: 
+          url="http://repo.zabbix.com/zabbix/3.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_3.4-1+bionic_all.deb"
+          dest="/tmp/zabbix-release_3.4-1.deb"
+        when: ansible_os_family == "Debian" and ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 18
+      
+      - name: Update apt packages
+        apt:
+          update_cache: yes
+
+      - name: Install zabbix-agent
+        apt:
+          name: zabbix-agent
+          state: present
+          update_cache: yes
+
+      - name: Start service zabbix-agent
+        service: 
+          name: zabbix-agent
+          state: started
+
+      - name: Enable service zabbix-agent
+        service: 
+          name: zabbix-agent
+          enabled: yes
+
+      - name: Creates directory = /etc/zabbix/zabbix_agentd.d/ 
+        file:
+          path: /etc/zabbix/zabbix_agentd.d/
+          state: directory
+          owner: root
+          group: root
+          mode: 0755
+        notify:
+          - Restart zabbix_agent
+    when: ansible_os_family == "Debian"
+  
+  handlers:
+  - name: Restart zabbix_agent
+    service: name=zabbix-agent.service state=restarted

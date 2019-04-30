@@ -1,0 +1,65 @@
+# удаление ufw / создание .ssh/authorized_keys /настройка timezone
+# установка минимально нужного софта / рестарт ОС
+---
+- name: First setup
+  hosts: all
+  become: yes
+  vars:
+    source_file: /Users/7bit/Documents/repo/Ansible/conf/authorized_keys # копируем ключи нужных специалистов 
+    destin_file: /root/.ssh/authorized_keys
+    
+  tasks:
+  - name: Check and Print LINUX Version
+    debug: var=ansible_os_family
+
+  - block: # ======== Block for Debian/Ubuntu =========    
+      - name: Remove service UFW (Uncomplicated Firewall) for Ubuntu 16 
+        apt: name={{ item }} state=removed
+        with_items:
+          - ufw
+        when: ansible_os_family == "Debian" and ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 16
+
+      - name: Creates directory = /root/.ssh/ 
+        file:
+          path: /root/.ssh/
+          state: directory
+          owner: root
+          group: root
+          mode: 0700
+    
+      - name: Copy authorized_keys in directory = /root/.ssh/
+        copy: src={{ source_file }} dest={{ destin_file }} mode=0600
+
+      - name: set timezone to Europe/Moscow
+        timezone:
+          name: Europe/Moscow
+
+      - name: Ensure a locale exists
+        shell: locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+      
+      - name: Install basic packages for Debian/Ubuntu
+        apt: name={{ item }} state=installed update_cache=yes
+        with_items:
+         - net-tools
+         - nano
+         - mc
+         - htop
+         - sysstat
+         - traceroute
+         - tree
+         - wget
+
+      - name: Restart Debian/Ubuntu server
+        shell: sleep 3 && shutdown -r now
+        async: 1
+        poll: 0
+
+    when: ansible_os_family == "Debian"
+      
+  
+
+
+
+
+
+  
