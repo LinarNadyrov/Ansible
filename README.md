@@ -7,6 +7,6 @@ Config files for configuration system management
 - Настройка zabbix agent 
 
 **file - first_setting.yml**
-- initial system setup
+- Первоначальная настройка системы 
 
 
