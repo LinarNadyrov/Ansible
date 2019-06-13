@@ -25,10 +25,17 @@
           state: directory
           owner: root
           group: root
-          mode: 0700
+          mode: 0600
     
       - name: Copy authorized_keys in directory = /root/.ssh/
-        copy: src={{ source_file }} dest={{ destin_file }} mode=0600
+        copy: src={{ source_file }} dest={{ destin_file }} mode=0600 owner=root group=root
+
+      - name: Modifying config file /etc/ssh/sshd_config 
+        lineinfile:
+          dest: "/etc/ssh/sshd_config"
+          regexp: "^#PasswordAuthentication yes"
+          line: "PasswordAuthentication no"
+        notify: Reload sshd
 
       - name: set timezone to Europe/Moscow
         timezone:
@@ -48,6 +55,11 @@
          - traceroute
          - tree
          - wget
+         - zip
+         - unzip
+         - sshfs
+         - mercurial
+         - git
 
       - name: Restart Debian/Ubuntu server
         shell: sleep 3 && shutdown -r now
@@ -55,11 +67,6 @@
         poll: 0
 
     when: ansible_os_family == "Debian"
-      
-  
-
-
-
-
-
-  
+  handlers:
+  - name: Reload sshd
+    service: name=sshd.service state=reloaded

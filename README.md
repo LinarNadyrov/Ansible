@@ -5,8 +5,10 @@ Config files for configuration system management
 - Установка zabbix agent на ОС Ubuntu 14/16/18
 
 - Настройка zabbix agent 
-
+---
 ### **file - first_setting.yml**
-- Первоначальная настройка системы 
+- Первоначальная настройка системы
+---
+
 
 
