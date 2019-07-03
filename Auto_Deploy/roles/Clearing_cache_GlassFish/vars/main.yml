@@ -1,0 +1,4 @@
+---
+# vars file for Clearing_cache_GlassFish
+path_generated: /opt/glassfish4/glassfish/domains/domain1/generated
+path_osgi_cache: /opt/glassfish4/glassfish/domains/domain1/osgi-cache

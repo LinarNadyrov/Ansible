@@ -1,0 +1,76 @@
+---
+- name: backup lxc container in Proxmox
+  hosts: p0
+  roles: 
+    - role: Backup_LXC_Proxmox
+
+- name: Lock_Users in tadb
+  hosts: tadb
+  roles: 
+    - role: Lock_Users
+  
+- name: Sleep in ta
+  hosts: ta
+  roles: 
+    - role: Sleep_120
+
+- name: Unlock_User_TA in tadb
+  hosts: tadb
+  roles: 
+    - role: Unlock_User_TA 
+
+- name: Deploy in ta
+  hosts: ta
+  roles: 
+    - role: Deploy_TA
+
+- name: Sleep in ta
+  hosts: ta
+  roles: 
+    - role: Sleep_120
+
+- name: Stop_GlassFish in ta 
+  hosts: ta
+  roles: 
+    - role: Stop_GlassFish
+
+- name: Clearing_cache_GlassFish in ta 
+  hosts: ta
+  roles: 
+    - role: Clearing_cache_GlassFish
+
+- name: Sleep in ta
+  hosts: ta
+  roles: 
+    - role: Sleep_120
+
+- name: Start_GlassFish in ta 
+  hosts: ta
+  roles: 
+    - role: Start_GlassFish
+
+- name: Sleep in ta
+  hosts: ta
+  roles: 
+    - role: Sleep_120
+
+- name: Restart_GlassFish in ta 
+  hosts: ta
+  roles: 
+    - role: Restart_GlassFish
+
+- name: Deploy new DT in BRMS || Rebuild in BRMS 
+  hosts: localhost
+  become: yes
+  roles: 
+    - role: Deploy_DT_BRMS
+
+- name: Lock_User_TA in tadb
+  hosts: tadb
+  roles: 
+    - role: Lock_User_TA 
+
+- name: Unlock_Users in tadb
+  hosts: tadb
+  roles: 
+    - role: Unlock_Users

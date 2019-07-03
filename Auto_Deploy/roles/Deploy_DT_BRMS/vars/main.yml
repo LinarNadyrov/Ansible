@@ -1,0 +1,7 @@
+---
+# vars file for Deploy_DT_BRMS
+tabrms_address: tabrmsdeploytest1-dev.domain.ru
+tabrms_ports: 8080
+guvnor_assets_binary: /guvnor/rest/packages/VipConnect.TravelAgregator.switch_case/assets/switch_case/binary
+guvnor_binary: /guvnor/rest/packages/VipConnect.TravelAgregator.switch_case/binary
+source_file_brms: /root/shared/brms/

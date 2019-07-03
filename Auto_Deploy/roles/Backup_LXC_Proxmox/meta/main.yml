@@ -1,0 +1,10 @@
+galaxy_info:
+  author: LinarNadyrov
+  description: Backup lxc containers in Proxmox
+  company: "JSC VIP Service"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.4
+  platforms:
+  - name: Debian (Proxmox 5.3)
+    versions:
+      - 9.6 (stretch)

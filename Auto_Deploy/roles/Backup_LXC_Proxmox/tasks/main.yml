@@ -1,0 +1,13 @@
+---
+tasks file for Backup_LXC_Proxmox
+- name: backup lxc "{{lxc_ta}}" container 
+  shell: vzdump "{{lxc_ta}}" --mode stop --storage local --mailto "{{ mail_address }}" --compress gzip --mailnotification always
+  when: ansible_virtualization_type == "kvm"
+
+- name: backup lxc "{{lxc_tabrms}}" container 
+  shell: vzdump "{{lxc_tabrms}}" --mode stop --storage local --mailto "{{ mail_address }}" --compress gzip --mailnotification always
+  when: ansible_virtualization_type == "kvm"
+
+- name: backup lxc "{{lxc_tadb}}" container 
+  shell: vzdump "{{lxc_tadb}}" --mode stop --storage local --mailto "{{ mail_address }}" --compress gzip --mailnotification always
+  when: ansible_virtualization_type == "kvm"

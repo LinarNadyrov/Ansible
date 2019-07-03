@@ -1,0 +1,8 @@
+---
+# vars file for Lock_Users
+source_file_sql: /root/shared/sql/
+destin_file_sql: /shared/
+
+owner: postgres
+group: postgres
+mode: 0440

@@ -1,0 +1,19 @@
+---
+# vars file for Deploy_TA
+source_file_pwd: /root/shared/
+destin_file_pwd: /shared/
+
+source_file_war: /root/shared/war/
+destin_file_war: /shared/war/
+
+source_file_dt: /root/shared/dt/
+destin_file_dt: /shared/dt/
+
+source_file_properties: /root/shared/properties/
+destin_file_properties: /shared/properties/
+
+owner: glassfish
+group: glassfish
+mode: 0440
+
+TA_war: TA.war

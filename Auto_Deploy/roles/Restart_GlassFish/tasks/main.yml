@@ -1,0 +1,7 @@
+---
+# tasks file for Restart_GlassFish
+- name: Restart_GlassFish
+  become: yes
+  service: 
+    name={{ name_service }}
+    state=restarted

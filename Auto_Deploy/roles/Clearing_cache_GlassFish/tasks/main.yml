@@ -1,0 +1,11 @@
+---
+# tasks file for Clearing_cache_GlassFish
+- name: Clearing cache 
+  become: yes
+  become_method: sudo
+  become_user: glassfish
+  file: 
+    state: absent
+    path: "{{ item }}"
+  with_items: 
+    - [ "{{ path_generated }}", "{{ path_osgi_cache }}" ]

@@ -1,0 +1,32 @@
+---
+# tasks file for Lock_Users
+- name: Create a folder "shared" in tadb
+  become: yes
+  tags: Lock
+  file:
+    path: "{{ item }}" 
+    state: directory
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: "{{ mode }}"
+  with_items:
+  - " {{ destin_file_sql }} " 
+
+- name: Copy SQL files with "ansible" to "tadb"
+  become: yes
+  tags: Lock
+  copy: 
+    src: "{{ item }}"
+    dest: "{{ destin_file_sql }}"
+    mode: "{{ mode }}" 
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+  with_fileglob: 
+    - "{{ source_file_sql }}/*"
+  
+- name: Lock (Блокировка) Users in "tadb"
+  tags: Lock
+  become: yes
+  become_method: sudo
+  become_user: postgres
+  shell: /usr/bin/psql -f "{{ destin_file_sql }}lock.sql" --echo-errors --echo-queries 2>&1

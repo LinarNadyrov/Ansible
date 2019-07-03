@@ -1,0 +1,6 @@
+---
+# tasks file for Stop_GlassFish
+- name: Stop_GlassFish 
+  service: 
+    name={{ name_service }}
+    state=stopped
