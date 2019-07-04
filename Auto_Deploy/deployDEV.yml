@@ -1,8 +1,8 @@
 ---
-- name: backup lxc container in Proxmox
-  hosts: p0
-  roles: 
-    - role: Backup_LXC_Proxmox
+# - name: backup lxc container in Proxmox
+#   hosts: p0
+#   roles: 
+#     - role: Backup_LXC_Proxmox
 
 - name: Lock_Users in tadb
   hosts: tadb
@@ -12,7 +12,7 @@
 - name: Sleep in ta
   hosts: ta
   roles: 
-    - role: Sleep_120
+    - role: Sleep
 
 - name: Unlock_User_TA in tadb
   hosts: tadb
@@ -27,7 +27,7 @@
 - name: Sleep in ta
   hosts: ta
   roles: 
-    - role: Sleep_120
+    - role: Sleep
 
 - name: Stop_GlassFish in ta 
   hosts: ta
@@ -42,7 +42,7 @@
 - name: Sleep in ta
   hosts: ta
   roles: 
-    - role: Sleep_120
+    - role: Sleep
 
 - name: Start_GlassFish in ta 
   hosts: ta
@@ -52,7 +52,7 @@
 - name: Sleep in ta
   hosts: ta
   roles: 
-    - role: Sleep_120
+    - role: Sleep
 
 - name: Restart_GlassFish in ta 
   hosts: ta

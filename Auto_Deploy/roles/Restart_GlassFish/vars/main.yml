@@ -1,0 +1,3 @@
+---
+# vars file for Restart_GlassFish
+service_name: glassfish

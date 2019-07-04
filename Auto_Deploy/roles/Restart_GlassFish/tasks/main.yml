@@ -3,5 +3,5 @@
 - name: Restart_GlassFish
   become: yes
   service: 
-    name={{ name_service }}
+    name="{{ service_name }}"
     state=restarted

@@ -1,5 +1,5 @@
 ---
-# tasks file for Sleep_120
+# tasks file for Sleep
 - name: Sleep on "{{ timeout }}"
   become: yes
   pause: 
