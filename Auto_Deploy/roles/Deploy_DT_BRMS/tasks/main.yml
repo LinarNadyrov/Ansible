@@ -1,8 +1,8 @@
 ---
 # tasks file for Deploy_DT_BRMS
 - name: Deploy new DT in BRMS
-  shell: curl -u "{{Login}}":"{{Pass}}" -X PUT -H "Content-Type:application/octet-stream" -T "{{ source_file_brms }}1.xls" http://"{{ tabrms_address }}":"{{ tabrms_port }}""{{ guvnor_assets_binary }}" 
+  shell: curl -u "{{Login}}":"{{Pass}}" -X PUT -H "Content-Type:application/octet-stream" -T "{{ source_folder_brms }}""{{ source_file_brms }}" http://"{{ tabrms_address }}":"{{ tabrms_port }}""{{ guvnor_assets_binary }}" 
 
 - name: Rebuild in BRMS
-  shell: curl -u "{{Login}}":"{{Pass}}" -X GET http://"{{ tabrms_address }}":"{{ tabrms_port }}""{{ guvnor_binary }}" 
-
+  shell: curl -u "{{Login}}":"{{Pass}}" -X GET http://"{{ tabrms_address }}":"{{ tabrms_port }}""{{ guvnor_binary }}"
+  

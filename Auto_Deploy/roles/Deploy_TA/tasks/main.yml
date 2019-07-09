@@ -9,25 +9,26 @@
     group: "{{ group }}"
     mode: "{{ mode }}"
   with_items:
-  - [ " {{ destin_file_pwd }} ", " {{ destin_file_war }} " , " {{ destin_file_dt }} " , " {{ destin_file_properties }} " ]
+  - [ " {{ destin_folder_pwd }} ", " {{ destin_folder_war }} " , " {{ destin_folder_dt }} " , " {{ destin_folder_properties }} " ]
 
 - name: Copy WAR files with "ansible" to "ta"
   become: yes
-  copy: src={{ source_file_war }} "{{ TA_war }}" dest={{ destin_file_war }} mode="{{ mode }}" owner="{{ owner }}" group="{{ group }}"
+  copy: src="{{ source_folder_war }}" "{{ TA_war }}" dest="{{ destin_folder_war }}" mode="{{ mode }}" owner="{{ owner }}" group="{{ group }}"
 
+# TODO
 # - name: Copy DT files with "ansible" to "ta"
-#   copy: src={{ source_file_dt }}/ДРУГИЕ war dest={{ destin_file_dt }} mode=0600
+#   copy: src={{ source_folder_dt }}/ДРУГИЕ war dest={{ destin_folder_dt }} mode=0600
 
 # - name: Copy PROPERTIES properties files with "ansible" to "ta"
-#   copy: src={{ source_file_properties }}/TA.war dest={{ destin_file_properties }} mode=0600
+#   copy: src={{ source_folder_properties }}/TA.war dest={{ destin_folder_properties }} mode=0600
 # Указанные выше task удалять не нужно, это как напоманиание, что еще нужно будет сделать. Скорее всего вынести в отдельные роли
 
 - name: Copy pwd files with "ansible" to "ta"
   become: yes
-  copy: src={{ source_file_pwd }}/pwd dest={{ destin_file_pwd }} mode="{{ mode }}" owner="{{ owner }}" group="{{ group }}"
+  copy: src="{{ source_folder_pwd }}" "{{ file_pwd }}" dest="{{ destin_folder_pwd }}" mode="{{ mode }}" owner="{{ owner }}" group="{{ group }}"
 
 - name: Run auto deploy for TA
   become: yes
   become_method: sudo
   become_user: glassfish
-  shell: /opt/glassfish4/bin/./asadmin -W "{{ destin_file_pwd }}pwd" deploy --contextroot TA --force=true {{ destin_file_war }}"{{ TA_war }}"
+  shell: /opt/glassfish4/bin/./asadmin -W "{{ destin_folder_pwd }}""{{ file_pwd }}" deploy --contextroot TA --force=true "{{ destin_folder_war }}""{{ TA_war }}"

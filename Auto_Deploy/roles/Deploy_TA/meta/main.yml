@@ -1,6 +1,6 @@
 galaxy_info:
   author: LinarNadyrov
-  description: Deploy "war" to GlassFish Server
+  description: Deploy "war" in GlassFish Server
   company: "JSC VIP Service"
   license: "license (BSD, MIT)"
   min_ansible_version: 2.4

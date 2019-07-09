@@ -1,30 +1,7 @@
 ---
 # tasks file for Lock_User_TA
-- name: Create a folder "shared" in tadb
-  tags: Lock
-  file:
-    path: "{{ item }}" 
-    state: directory
-    owner: "{{ owner }}"
-    group: "{{ group }}"
-    mode: "{{ mode }}"
-  with_items:
-  - [ " {{ destin_file_sql }} " ]
-
-- name: Copy SQL files with "ansible" to "tadb"
-  tags: Lock
-  copy: 
-    src: "{{ item }}"
-    dest: "{{ destin_file_sql }}"
-    mode: "{{ mode }}" 
-    owner: "{{ owner }}"
-    group: "{{ group }}"
-  with_fileglob: 
-    - "{{ source_file_sql }}/*"
-
 - name: Lock (Блокировка) ta Users in "tadb"
-  tags: Lock
   become: yes
   become_method: sudo
   become_user: postgres
-  shell: /usr/bin/psql -f "{{ destin_file_sql }}lockTA.sql" --echo-errors --echo-queries 2>&1
+  shell: psql -c "alter user ta with nologin;"

@@ -1,6 +1,6 @@
 galaxy_info:
   author: LinarNadyrov
-  description: Deploy "war" in GlassFish Server
+  description: Unlock user in PostgreSQL
   company: "JSC VIP Service"
   license: "license (BSD, MIT)"
   min_ansible_version: 2.4
@@ -8,3 +8,4 @@ galaxy_info:
   - name: PostgreSQL 
     versions:
       - 10.4
+
