@@ -1,8 +1,8 @@
 ---
-# - name: backup lxc container in Proxmox
-#   hosts: p0
-#   roles: 
-#     - role: Backup_LXC_Proxmox
+- name: backup lxc container in Proxmox
+  hosts: p0
+  roles: 
+    - role: Backup_LXC_Proxmox
 
 - name: Lock_Users in tadb
   hosts: tadb
