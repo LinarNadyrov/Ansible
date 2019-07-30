@@ -42,8 +42,13 @@
           name: Europe/Moscow
 
       - name: Ensure a locale exists
-        shell: locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
-      
+        locale_gen:
+          name: "{{ item }}"
+          state: present
+        with_items:
+          - en_US.UTF-8
+          - ru_RU.UTF-8
+ 
       - name: Install basic packages for Debian/Ubuntu
         apt: name={{ item }} state=installed update_cache=yes
         with_items:
