@@ -1,0 +1,6 @@
+---
+# vars file for Rename_the_File
+remote_dir: "/opt/Pentaho/"
+remote_file: ".installedLicenses.xml"
+
+date: "{{ lookup('pipe', 'date +%d.%m.%Y') }}"

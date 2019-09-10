@@ -1,0 +1,8 @@
+---
+# vars file for Cp_file_to_Pentaho
+local_dir: "/opt/license_pentaho/"
+
+remote_dir: "/opt/Pentaho/"
+remote_file: ".installedLicenses.xml"
+user_owner: root
+user_group: root

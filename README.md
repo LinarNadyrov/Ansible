@@ -20,4 +20,9 @@ Config files for configuration system management
     - Блокировка postgres-пользователя
     - Разблокировка пользователей
 ---
+**folder - UpdateLicensePentaho**
+    - Verify and rename the license file for the Pentaho server version 7.0.0
+    - Copy file lisense to localhost/Server Pentaho
+---
+
 

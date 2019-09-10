@@ -1,0 +1,3 @@
+---
+# vars file for Restart_Pentaho
+service_name: pentaho.service

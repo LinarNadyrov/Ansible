@@ -1,0 +1,21 @@
+---
+- name: Verify and rename the license file for the Pentaho server
+  hosts: bidev
+  roles: 
+    - role: Rename_the_File
+
+- name: Copy file lisense to localhost
+  hosts: localhost
+  roles: 
+    - role: Cp_file_to_localhost
+  
+- name: Copy file lisense to Server Pentaho
+  hosts: bidev
+  roles: 
+    - role: Cp_file_to_Pentaho
+
+- name: Restart_Pentaho
+  hosts: bidev
+  roles: 
+    - role: Restart_Pentaho 
+

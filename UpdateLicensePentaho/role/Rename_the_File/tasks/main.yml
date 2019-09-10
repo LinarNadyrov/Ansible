@@ -1,0 +1,11 @@
+---
+# tasks file for Rename_the_File
+- name: Checking if the file exists
+  become: yes
+  stat: path="{{ remote_dir }}{{ remote_file }}"
+  register: stat_result
+
+- name: Rename the file
+  become: yes
+  command: mv "{{ remote_dir }}{{ remote_file }}" "{{ remote_dir }}{{ remote_file }}.{{ date }}.bak"
+  when: stat_result.stat.exists == True 

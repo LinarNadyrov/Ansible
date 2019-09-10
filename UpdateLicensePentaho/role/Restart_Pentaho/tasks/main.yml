@@ -1,0 +1,7 @@
+---
+# tasks file for Restart_Pentaho
+- name: Restart_Pentaho
+  become: yes
+  service: 
+    name="{{ service_name }}"
+    state=restarted

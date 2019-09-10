@@ -1,0 +1,9 @@
+---
+# tasks file for Cp_file_to_Pentaho
+- name: Copy license file to Pentaho
+  copy: 
+    src: "{{ local_dir }}{{ remote_file }}"
+    dest: "{{ remote_dir }}{{ remote_file }}"
+    mode: 0644 
+    owner: "{{ user_owner }}" 
+    group: "{{ user_group }}"

@@ -1,0 +1,10 @@
+---
+# vars file for Cp_file_to_localhost
+license_srv: ip_address
+
+remote_dir: "/opt/Pentaho/"
+remote_file: ".installedLicenses.xml"
+
+local_dir: "/opt/license_pentaho/"
+
+user: root

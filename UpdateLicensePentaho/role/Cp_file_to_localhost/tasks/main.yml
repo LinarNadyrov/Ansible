@@ -1,0 +1,4 @@
+---
+# tasks file for Cp_file_to_localhost
+- name: Copy file from license server to localhost
+  shell: scp "{{ user }}"@"{{ license_srv }}":/"{{ remote_dir }}{{ remote_file }}" "{{ local_dir }}".
