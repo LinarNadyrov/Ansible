@@ -21,8 +21,7 @@ Config files for configuration system management
     - Разблокировка пользователей
 ---
 **folder - UpdateLicensePentaho**
+- Update the license on the Server Pentaho
     - Verify and rename the license file for the Pentaho server version 7.0.0
     - Copy file lisense to localhost/Server Pentaho
 ---
-
-
