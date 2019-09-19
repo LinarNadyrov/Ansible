@@ -5,8 +5,8 @@
   hosts: all
   become: yes
   vars:
-    source_file: /Users/7bit/Documents/repo/Ansible/conf/authorized_keys # копируем ключи нужных специалистов 
-    destin_file: /root/.ssh/authorized_keys
+    source_file:                                      # копируем ключи нужных специалистов, указываем ключи 
+    destin_file: /root/.ssh/authorized_keys 
     
   tasks:
   - name: Check and Print LINUX Version

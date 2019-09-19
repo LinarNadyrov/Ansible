@@ -3,8 +3,8 @@
 - hosts: all
   become: yes
   vars:
-    source_file: /Users/7bit/Documents/repo/Zabbix/lxc_template/zabbix_container.conf
-    destin_file: /etc/zabbix/zabbix_agentd.d/zabbix_container.conf 
+    source_file: 
+    destin_file:  
     
   tasks:
   - name: Check and Print LINUX Version
