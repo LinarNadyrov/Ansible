@@ -1,0 +1,177 @@
+## Ниже описанный сценарий: 
+## - восставливает контейнеры с нужным номером (номер указываем мы) из нужного нам бэкапа (название бэкапа указываем мы)
+## - параметризует создание Linux Bridge на Proxmox 
+## - параметризует создание внутренних ip адресов для контейнеров 
+## - параметризует название контейнеров
+## - настраивает - /etc/host для контейнеров
+
+---
+- name: 
+  hosts: all
+  become: yes
+  vars:
+    number_lxc_ta: 
+    number_lxc_tabrms: 
+    number_lxc_tadb: 
+        
+    backup_storage: 
+    
+    backup_container_ta: 
+    backup_container_tabrms: 
+    container_storage: 
+
+    name_bridge:  
+    ip_address_bridge:  
+    netmask_bridge:  
+    network_range_iptables:                # сеть должна совпадать с "ip_address_bridge"
+
+    ip_address_lxc_ta:                     # диапазон должен совпадать с ip_address_bridge | на будущее маску можно вынести в переменную
+    ip_address_lxc_tabrms:                 # диапазон должен совпадать с ip_address_bridge | на будущее маску можно вынести в переменную
+    ip_address_lxc_tadb:                   # диапазон должен совпадать с ip_address_bridge | на будущее маску можно вынести в переменную
+
+    hostname_for_lxc_ta: 
+    hostname_for_lxc_tabrms: 
+    hostname_for_lxc_tadb: 
+    domain_lxc_container: 
+
+  tasks:
+  # Восстановление контейнеров
+  - name: Restore lxc_ta container in Proxmox under the "{{ number_lxc_ta }}"
+    command: pct restore "{{ number_lxc_ta }}" "{{ backup_storage }}""{{ backup_container_ta }}" --storage "{{ container_storage }}"
+    when: ansible_virtualization_type == "kvm"
+
+  - name: Restore lxc_tabrms container in Proxmox under the "{{ number_lxc_tabrms }}"
+    command: pct restore "{{ number_lxc_tabrms }}" "{{ backup_storage }}""{{ backup_container_tabrms }}" --storage "{{ container_storage }}"
+    when: ansible_virtualization_type == "kvm"
+
+  # Создаем Bridge на НОДе
+  - name: Create Bridge in Proxmox (file /etc/network/interfaces)
+    blockinfile:
+      path: /etc/network/interfaces
+      backup: yes #создаем бэкап файла перед изменением
+      block: |
+        auto {{ name_bridge }}
+        iface {{ name_bridge }} inet static
+                address {{ ip_address_bridge }}
+                netmask {{ netmask_bridge }}
+                bridge-ports none
+                bridge-stp off
+                bridge-fd 0
+                post-up echo 1 > /proc/sys/net/ipv4/ip_forward
+                post-up   iptables -t nat -A POSTROUTING -s '{{ network_range_iptables }}' ! -d '{{ network_range_iptables }}' -j MASQUERADE
+                post-down iptables -t nat -D POSTROUTING -s '{{ network_range_iptables }}' ! -d '{{ network_range_iptables }}' -j MASQUERADE
+
+  - name: Activate the Bridge "{{ name_bridge }}"
+    command: ifup "{{ name_bridge }}"
+
+  # Удаляем все сетевые интерфейсы  
+  - name: Delete existing network interface for lxc_ta container 
+    command: pct set "{{ number_lxc_ta }}" -delete net0,net1,net2,net3
+
+  - name: Delete existing network interface for lxc_tabrms container 
+    command: pct set "{{ number_lxc_tabrms }}" -delete net0,net1,net2,net3
+
+  - name: Delete existing network interface for lxc_tadb container 
+    command: pct set "{{ number_lxc_tadb }}" -delete net0,net1,net2,net3
+
+  # Создаем внутренние сетевые интерфейсы 
+  - name: Create internal network interface for lxc_ta container
+    command: pct set "{{ number_lxc_ta }}" -net0 name=eth0,bridge="{{ name_bridge }}",ip="{{ ip_address_lxc_ta }}"/24
+
+  - name: Create internal network interface for lxc_tabrms container
+    command: pct set "{{ number_lxc_tabrms }}" -net0 name=eth0,bridge="{{ name_bridge }}",ip="{{ ip_address_lxc_tabrms }}"/24,gw="{{ ip_address_bridge }}"
+  
+  - name: Create internal network interface for lxc_tadb container
+    command: pct set "{{ number_lxc_tadb }}" -net0 name=eth0,bridge="{{ name_bridge }}",ip="{{ ip_address_lxc_tadb }}"/24,gw="{{ ip_address_bridge }}"
+  
+  # Изменяем название и домен контейнеров
+  - name: Edit hostname for lxc_ta container in Proxmox under the "{{ number_lxc_ta }}"
+    command: pct set "{{ number_lxc_ta }}" -hostname "{{ hostname_for_lxc_ta }}"."{{ domain_lxc_container }}"
+
+  - name: Edit hostname for lxc_tabrms container in Proxmox under the "{{ number_lxc_tabrms }}"
+    command: pct set "{{ number_lxc_tabrms }}" -hostname "{{ hostname_for_lxc_tabrms }}"."{{ domain_lxc_container }}"
+  
+  - name: Edit hostname for lxc_tadb container in Proxmox under the "{{ number_lxc_tadb }}"
+    command: pct set "{{ number_lxc_tadb }}" -hostname "{{ hostname_for_lxc_tadb }}"."{{ domain_lxc_container }}"
+
+  # Удаляем и создаем файл /etc/host
+  - name: Remove file - /etc/host in "{{ hostname_for_lxc_ta }}" 
+    command: rm -rf /rpool/subvol-"{{ number_lxc_ta }}"-disk-0/etc/hosts
+  
+  - name: Create file - /etc/host in "{{ hostname_for_lxc_ta }}"
+    file: 
+      path: /rpool/subvol-{{ number_lxc_ta }}-disk-0/etc/hosts
+      state: touch
+      mode: 0644
+      owner: root
+  
+  - name: Remove file - /etc/host in "{{ hostname_for_lxc_tabrms }}" 
+    command: rm -rf /rpool/subvol-"{{ number_lxc_tabrms }}"-disk-0/etc/hosts
+  
+  - name: Create file - /etc/host in "{{ hostname_for_lxc_tabrms }}"
+    file: 
+      path: /rpool/subvol-{{ number_lxc_tabrms }}-disk-0/etc/hosts
+      state: touch
+      mode: 0644
+      owner: root
+  
+  - name: Remove file - /etc/host in "{{ hostname_for_lxc_tadb }}" 
+    command: rm -rf /rpool/subvol-"{{ number_lxc_tadb }}"-disk-0/etc/hosts
+  
+  - name: Create file - /etc/host in "{{ hostname_for_lxc_tadb }}"
+    file: 
+      path: /rpool/subvol-{{ number_lxc_tadb }}-disk-0/etc/hosts
+      state: touch
+      mode: 0644
+      owner: root
+  
+  # Изменяем содержимое файла - /etc/hosts
+  - name: Edit /etc/hosts for lxc_ta container in Proxmox under the "{{ number_lxc_ta }}"
+    blockinfile:
+      path: /rpool/subvol-{{ number_lxc_ta }}-disk-0/etc/hosts
+      backup: yes
+      block: | 
+        127.0.0.1	localhost
+        ::1		localhost ip6-localhost ip6-loopback
+        ff02::1		ip6-allnodes
+        ff02::2		ip6-allrouters
+        # --- BEGIN PVE ---
+        {{ ip_address_lxc_ta }} {{ hostname_for_lxc_ta }}.{{ domain_lxc_container }} {{ hostname_for_lxc_ta }}
+        # --- END PVE ---
+        {{ ip_address_lxc_ta }}  ta
+        {{ ip_address_lxc_tabrms }}  tabrms
+        {{ ip_address_lxc_tadb }}  tadb
+      marker: ""
+  
+  - name: Edit /etc/hosts for lxc_ta container in Proxmox under the "{{ number_lxc_tabrms }}"
+    blockinfile:
+      path: /rpool/subvol-{{ number_lxc_tabrms }}-disk-0/etc/hosts
+      backup: yes
+      block: | 
+        127.0.0.1	localhost
+        ::1		localhost ip6-localhost ip6-loopback
+        ff02::1		ip6-allnodes
+        ff02::2		ip6-allrouters
+        # --- BEGIN PVE ---
+        {{ ip_address_lxc_tabrms }} {{ hostname_for_lxc_tabrms }}.{{ domain_lxc_container }} {{ hostname_for_lxc_tabrms }}
+        # --- END PVE ---
+      marker: ""
+  
+  - name: Edit /etc/hosts for lxc_ta container in Proxmox under the "{{ number_lxc_tadb }}"
+    blockinfile:
+      path: /rpool/subvol-{{ number_lxc_tadb }}-disk-0/etc/hosts
+      backup: yes
+      block: | 
+        127.0.0.1	localhost
+        ::1		localhost ip6-localhost ip6-loopback
+        ff02::1		ip6-allnodes
+        ff02::2		ip6-allrouters
+        # --- BEGIN PVE ---
+        {{ ip_address_lxc_tadb }} {{ hostname_for_lxc_tadb }}.{{ domain_lxc_container }} {{ hostname_for_lxc_tadb }}
+        # --- END PVE ---
+      marker: ""
+
+  
+
+    
+  

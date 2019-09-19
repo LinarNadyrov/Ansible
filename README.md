@@ -25,3 +25,10 @@ Config files for configuration system management
     - Verify and rename the license file for the Pentaho server version 7.0.0
     - Copy file lisense to localhost/Server Pentaho
 ---
+**file - UnfoldingProdShard.yml**
+- восставливает контейнеры с нужным номером (номер указываем мы) из нужного нам бэкапа (название бэкапа указываем мы)
+- параметризует создание Linux Bridge на Proxmox (версия )
+- параметризует создание внутренних ip адресов для контейнеров 
+- параметризует название контейнеров
+- настраивает - /etc/host для контейнеров
+---
