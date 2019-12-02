@@ -1,4 +1,4 @@
-# удаление ufw / создание .ssh/authorized_keys /настройка timezone
+# создание .ssh/authorized_keys /настройка timezone
 # установка минимально нужного софта / рестарт ОС
 ---
 - name: First setting for Proxmox
