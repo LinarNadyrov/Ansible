@@ -1,12 +1,12 @@
 # удаление ufw / создание .ssh/authorized_keys /настройка timezone
 # установка минимально нужного софта / рестарт ОС
 ---
-- name: First setup
+- name: First setting for Servers
   hosts: all
   become: yes
   vars:
-    source_file:                                 # копируем ключи нужных специалистов 
-    destin_file: 
+    source_file:                               # копируем ключи нужных специалистов 
+    destin_file: /root/.ssh/authorized_keys
     
   tasks:
   - name: Check and Print LINUX Version
@@ -54,7 +54,7 @@
         with_items:
           - en_US.UTF-8
           - ru_RU.UTF-8
- 
+          
       - name: Install basic packages for Debian/Ubuntu
         apt: name={{ item }} state=installed update_cache=yes
         with_items:
@@ -68,6 +68,7 @@
          - wget
          - zip
          - unzip
+         - screen
          - sshfs
          - mercurial
          - git

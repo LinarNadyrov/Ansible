@@ -6,9 +6,12 @@ Config files for configuration system management
 
 - Настройка zabbix agent 
 ---
-**file - first_setting.yml**
+**file - first_setting_for_Srv.yml**
 - Первоначальная настройка системы
 ---
+**file - first_setting_for_Proxmox.yml**
+- Первоначальная настройка Proxmox
+----
 **folder - Auto_Deploy**
 - Auto Deploy in GlassFish Server Open Source Edition version 4.1.1
     - Блокировка пользователей

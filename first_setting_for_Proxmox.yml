@@ -1,0 +1,127 @@
+# удаление ufw / создание .ssh/authorized_keys /настройка timezone
+# установка минимально нужного софта / рестарт ОС
+---
+- name: First setting for Proxmox
+  hosts: all
+  become: yes
+  vars:
+    source_file:                               # копируем ключи нужных специалистов 
+    destin_file: /root/.ssh/authorized_keys
+    destin_file_administrator: /home/administrator/.ssh/authorized_keys
+    
+  tasks:
+  - name: Check and Print LINUX Version
+    debug: var=ansible_os_family 
+  
+  - name: Check and Print LINUX Version
+    debug: var=ansible_virtualization_type
+
+  - block: # ======== Block for Debian/Ubuntu =========   
+      - name: Creates directory = /root/.ssh/ 
+        file:
+          path: /root/.ssh/
+          state: directory
+          owner: root
+          group: root
+          mode: 0600
+    
+      - name: Copy authorized_keys in directory = /root/.ssh/
+        copy: src={{ source_file }} dest={{ destin_file }} mode=0600 owner=root group=root
+
+      - name: Modifying config file /etc/ssh/sshd_config 
+        lineinfile:
+          dest: "/etc/ssh/sshd_config"
+          regexp: "^#PasswordAuthentication yes"
+          line: "PasswordAuthentication no"
+        notify: Reload sshd
+
+      - name: set timezone to Europe/Moscow
+        timezone:
+          name: Europe/Moscow
+
+      - name: Ensure a locale exists
+        locale_gen:
+          name: "{{ item }}"
+          state: present
+        with_items:
+          - en_US.UTF-8
+          - ru_RU.UTF-8
+      
+      - name: Modifying for Proxmox 6 config file - /etc/apt/sources.list.d/pve-enterprise.list
+        lineinfile:
+          dest: "/etc/apt/sources.list.d/pve-enterprise.list"
+          regexp: "deb https://enterprise.proxmox.com/debian/pve buster pve-enterprise" 
+          line: "#deb https://enterprise.proxmox.com/debian/pve buster pve-enterprise" 
+        when: ansible_virtualization_type == "kvm" and ansible_distribution == "Debian" and ansible_distribution_release == "buster"
+      
+      - name: Create and Modifying file for Proxmox 6 - /etc/apt/sources.list.d/no-subscription.list
+        lineinfile:
+          path: /etc/apt/sources.list.d/no-subscription.list
+          line: "deb http://download.proxmox.com/debian buster pve-no-subscription"
+          create: yes                                             # если данного файла нет, то создать
+          owner: root
+          group: root
+          mode: 0644
+        when: ansible_virtualization_type == "kvm" and ansible_distribution == "Debian" and ansible_distribution_release == "buster"
+
+      - name: Install basic packages for Proxmox 6
+        apt: name={{ item }} state=installed update_cache=yes
+        with_items:
+         - net-tools
+         - nano
+         - mc
+         - htop
+         - sysstat
+         - traceroute
+         - tree
+         - wget
+         - zip
+         - unzip
+         - iotop
+         - screen
+         - dnsutils
+         - sudo 
+        when: ansible_virtualization_type == "kvm" and ansible_distribution == "Debian" and ansible_distribution_release == "buster"
+      
+      - name: Add the user 'administrator' with a bash shell, appending the group 'sudo'
+        user:
+          name: administrator
+          shell: /bin/bash
+          groups: sudo
+          append: yes
+      
+      - name: Creates directory = /home/administrator/.ssh/ 
+        file:
+          path: /home/administrator/.ssh/
+          state: directory
+          owner: administrator
+          group: root
+          mode: 0600
+    
+      - name: Copy authorized_keys in directory = /home/administrator/.ssh/
+        copy: src={{ source_file }} dest={{ destin_file_administrator }} mode=0600 owner=administrator group=root
+      
+      - name: Create and Modifying directory - /etc/sudoers.d/administrator
+        lineinfile:
+          path: /etc/sudoers.d/administrator
+          line: "administrator ALL=(ALL) NOPASSWD: ALL"
+          create: yes                                             # Если данного файла нет, то создать
+          owner: root
+          group: root
+          mode: 0644
+
+      - name: Modifying config file /etc/systemd/journald.conf   # Включаем постоянное логирование системы
+        lineinfile:
+          dest: "/etc/systemd/journald.conf"
+          regexp: "^#Storage=auto"
+          line: "Storage=persistent"
+            
+      - name: Restart Debian/Ubuntu server
+        shell: sleep 3 && shutdown -r now
+        async: 1
+        poll: 0
+
+    when: ansible_os_family == "Debian"
+  handlers:
+  - name: Reload sshd
+    service: name=sshd.service state=reloaded
