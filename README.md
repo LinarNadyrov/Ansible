@@ -36,3 +36,5 @@ Config files for configuration system management
 - параметризует название контейнеров
 - настраивает - /etc/host для контейнеров
 ---
+**file - install_docker.yml**
+ - Установка docker на ОС Ubuntu 
