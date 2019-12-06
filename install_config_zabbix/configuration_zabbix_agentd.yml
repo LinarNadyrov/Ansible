@@ -3,11 +3,13 @@
 - hosts: all
   become: yes
   vars:
-    source_file: /Users/7bit/Documents/repo/Zabbix/
+    source_file: 
     destin_file: /etc/zabbix/
-    source_files: /Users/7bit/Documents/repo/Zabbix/lxc_template/zabbix_container.conf
+
+    source_files: *zabbix_container.conf
     destin_files: /etc/zabbix/zabbix_agentd.d/zabbix_container.conf
-    source_filess: /Users/7bit/Documents/repo/Zabbix/lxc_template/zabbix_proxmox.conf
+    
+    source_filess: *zabbix_proxmox.conf
     destin_filess: /etc/zabbix/zabbix_agentd.d/zabbix_proxmox.conf
 
   tasks:
@@ -26,26 +28,31 @@
         service: 
           name=zabbix-agent 
           state=started
-
+      
       - name: Generate ZABBIX_AGENT.J2 file for Debian/Ubuntu
         template: src={{ source_file }}/zabbix_agentd.j2 dest={{ destin_file }}/zabbix_agentd.conf mode=0644
         notify:
           - Restart zabbix_agent
-        when: ansible_os_family == "Debian"
+        when: ansible_virtualization_type == "lxc" and ansible_os_family == "Debian"
+
+      - name: Generate ZABBIX_AGENT.J2 file for Proxmox/Debian
+        template: src={{ source_file }}/zabbix_agentd.j2 dest={{ destin_file }}/zabbix_agentd.conf mode=0644
+        notify:
+          - Restart zabbix_agent
+        when: ansible_virtualization_type == "kvm" and ansible_os_family == "Debian"
 
       - name: Copy user parameter for LXC Containers   
         copy: src={{ source_files }} dest={{ destin_files }} mode=0644
         notify:
           - Restart zabbix_agent
         when: ansible_virtualization_type == "lxc" 
-        #and ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 14
 
       - name: Copy user parameter for Proxmox   
         copy: src={{ source_filess }} dest={{ destin_filess }} mode=0644
         notify:
           - Restart zabbix_agent
         when: ansible_virtualization_type == "kvm" 
-
+        
       - name: Enable service zabbix-agent
         service: 
           name: zabbix-agent
