@@ -4,8 +4,6 @@ Config files for configuration system management
 **folder - install_config_zabbix**
 - Установка zabbix agent на ОС Ubuntu 14/16/18
 - Установка zabbix agent на Proxmox 6
-- Настройка zabbix agent
-
 - Настройка zabbix agent 
 ---
 **file - first_setting_for_Srv.yml**
