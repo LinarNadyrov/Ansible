@@ -1,11 +1,11 @@
-# создание .ssh/authorized_keys /настройка timezone
+# удаление ufw / создание .ssh/authorized_keys /настройка timezone
 # установка минимально нужного софта / рестарт ОС
 ---
 - name: First setting for Proxmox
   hosts: all
   become: yes
   vars:
-    source_file:                               # копируем ключи нужных специалистов 
+    source_file:                                # копируем ключи нужных специалистов 
     destin_file: /root/.ssh/authorized_keys
     destin_file_administrator: /home/administrator/.ssh/authorized_keys
     
@@ -81,6 +81,7 @@
          - screen
          - dnsutils
          - sudo 
+         - ethtool
         when: ansible_virtualization_type == "kvm" and ansible_distribution == "Debian" and ansible_distribution_release == "buster"
       
       - name: Add the user 'administrator' with a bash shell, appending the group 'sudo'
@@ -99,7 +100,7 @@
           mode: 0600
     
       - name: Copy authorized_keys in directory = /home/administrator/.ssh/
-        copy: src={{ source_file }} dest={{ destin_file_administrator }} mode=0600 owner=administrator group=root
+        copy: src={{ source_file }} dest={{ destin_file_administrator }} mode=0700 owner=administrator group=root
       
       - name: Create and Modifying directory - /etc/sudoers.d/administrator
         lineinfile:
