@@ -9,7 +9,8 @@ Config files for configuration system management
 **file - first_setting_for_Srv.yml**
 - Первоначальная настройка системы
 ---
-**file - first_setting_for_Proxmox.yml**
+**file - install_and_configuration_Proxmox.yml**
+- Установка Proxmox на Debian и 
 - Первоначальная настройка Proxmox
 ----
 **folder - Auto_Deploy**
