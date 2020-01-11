@@ -6,7 +6,7 @@
   hosts: all
   become: yes
   vars:
-    source_file: /Users/7bit/Documents/authorized_keys # копируем ключи нужных специалистов 
+    source_file:                                          # копируем ключи нужных специалистов 
     destin_file: /root/.ssh/authorized_keys
     destin_file_administrator: /home/administrator/.ssh/authorized_keys
 
@@ -22,16 +22,16 @@
     debug: var=ansible_virtualization_type
 
   - block: # ======== Block for Debian/Ubuntu =========
-      # - name: Creates directory = /root/.ssh/ 
-      #   file:
-      #     path: /root/.ssh/
-      #     state: directory
-      #     owner: root
-      #     group: root
-      #     mode: 0600
+      - name: Creates directory = /root/.ssh/ 
+        file:
+          path: /root/.ssh/
+          state: directory
+          owner: root
+          group: root
+          mode: 0600
     
-      # - name: Copy authorized_keys in directory = /root/.ssh/
-      #   copy: src={{ source_file }} dest={{ destin_file }} mode=0600 owner=root group=root
+      - name: Copy authorized_keys in directory = /root/.ssh/
+        copy: src={{ source_file }} dest={{ destin_file }} mode=0600 owner=root group=root
 
       - name: Modifying config file /etc/ssh/sshd_config 
         lineinfile:
@@ -51,44 +51,44 @@
           - en_US.UTF-8
           - ru_RU.UTF-8
 
-      # - name: add pve-no-subscription repo
-      #   shell: echo "deb http://download.proxmox.com/debian/pve "{{ ansible_distribution_release }}" pve-no-subscription" > "{{ pve_repo_list }}"
+      - name: add pve-no-subscription repo
+        shell: echo "deb http://download.proxmox.com/debian/pve "{{ ansible_distribution_release }}" pve-no-subscription" > "{{ pve_repo_list }}"
 
-      # - name: add pve repository key 
-      #   command: wget "{{ pve_repo_keyurl }}" -O "{{ pve_local_key }}"
+      - name: add pve repository key 
+        command: wget "{{ pve_repo_keyurl }}" -O "{{ pve_local_key }}"
 
-      # - name: add pve repository key 
-      #   command: chmod +r "{{ pve_local_key }}"
+      - name: add pve repository key 
+        command: chmod +r "{{ pve_local_key }}"
 
-      # - name: update system
-      #   apt:
-      #     upgrade: dist
-      #     update_cache: yes
+      - name: update system
+        apt:
+          upgrade: dist
+          update_cache: yes
 
-      # - name: Install Proxmox packages
-      #   apt: name={{ item }} state=installed update_cache=yes
-      #   with_items:
-      #     - proxmox-ve
-      #     - postfix
-      #     - open-iscsi
-      #   when: ansible_virtualization_type == "kvm" and ansible_distribution == "Debian" and ansible_distribution_release == "buster"
+      - name: Install Proxmox packages
+        apt: name={{ item }} state=installed update_cache=yes
+        with_items:
+          - proxmox-ve
+          - postfix
+          - open-iscsi
+        when: ansible_virtualization_type == "kvm" and ansible_distribution == "Debian" and ansible_distribution_release == "buster"
   
-      # - name: Modifying for Proxmox 6 config file - /etc/apt/sources.list.d/pve-enterprise.list
-      #   lineinfile:
-      #     dest: "/etc/apt/sources.list.d/pve-enterprise.list"
-      #     regexp: "deb https://enterprise.proxmox.com/debian/pve buster pve-enterprise" 
-      #     line: "#deb https://enterprise.proxmox.com/debian/pve buster pve-enterprise" 
-      #   when: ansible_virtualization_type == "kvm" and ansible_distribution == "Debian" and ansible_distribution_release == "buster"
+      - name: Modifying for Proxmox 6 config file - /etc/apt/sources.list.d/pve-enterprise.list
+        lineinfile:
+          dest: "/etc/apt/sources.list.d/pve-enterprise.list"
+          regexp: "deb https://enterprise.proxmox.com/debian/pve buster pve-enterprise" 
+          line: "#deb https://enterprise.proxmox.com/debian/pve buster pve-enterprise" 
+        when: ansible_virtualization_type == "kvm" and ansible_distribution == "Debian" and ansible_distribution_release == "buster"
       
-      # - name: Create and Modifying file for Proxmox 6 - /etc/apt/sources.list.d/no-subscription.list
-      #   lineinfile:
-      #     path: /etc/apt/sources.list.d/no-subscription.list
-      #     line: "deb http://download.proxmox.com/debian buster pve-no-subscription"
-      #     create: yes                                             # если данного файла нет, то создать
-      #     owner: root
-      #     group: root
-      #     mode: 0644
-      #   when: ansible_virtualization_type == "kvm" and ansible_distribution == "Debian" and ansible_distribution_release == "buster"
+      - name: Create and Modifying file for Proxmox 6 - /etc/apt/sources.list.d/no-subscription.list
+        lineinfile:
+          path: /etc/apt/sources.list.d/no-subscription.list
+          line: "deb http://download.proxmox.com/debian buster pve-no-subscription"
+          create: yes                                             # если данного файла нет, то создать
+          owner: root
+          group: root
+          mode: 0644
+        when: ansible_virtualization_type == "kvm" and ansible_distribution == "Debian" and ansible_distribution_release == "buster"
 
       - name: Install basic packages for Proxmox 6
         apt: name={{ item }} state=installed update_cache=yes

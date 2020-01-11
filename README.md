@@ -10,7 +10,7 @@ Config files for configuration system management
 - Первоначальная настройка системы
 ---
 **file - install_and_configuration_Proxmox.yml**
-- Установка Proxmox на Debian и 
+- Установка Proxmox на Debian
 - Первоначальная настройка Proxmox
 ----
 **folder - Auto_Deploy**
