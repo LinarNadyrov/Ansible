@@ -39,7 +39,7 @@ Config files for configuration system management
 **file - install_docker.yml**
  - Установка docker на ОС Ubuntu 
 ----
-**file - Programs for work.yml**
+**file - Programs_for_work.yml**
  - Установка необходимого ПО для работы на ОС Ubuntu 
 ----
 
