@@ -1,0 +1,210 @@
+# В первую очередь нужно поставить 
+# - Install Ansible
+# sudo apt update
+# sudo apt install software-properties-common
+
+# sudo apt-add-repository ppa:ansible/ansible
+# sudo apt update
+# sudo apt install ansible
+
+# - Open-ssh 
+# sudo apt install openssh-server
+
+---
+- name: Installing programs for work
+  hosts: all
+  remote_user: linarnadyrov
+  become: yes
+  vars:
+    source_file:                                          # копируем ключи нужных специалистов 
+    destin_file: /root/.ssh/authorized_keys
+    destin_file_administrator: /home/administrator/.ssh/authorized_keys
+    
+  tasks:
+  - name: Check and Print LINUX Version
+    debug: var=ansible_os_family 
+  
+  - name: Check and Print LINUX Version
+    debug: var=ansible_distribution
+
+  - name: Modifying config file /etc/ssh/sshd_config 
+    lineinfile:
+      dest: "/etc/ssh/sshd_config"
+      regexp: "^#PasswordAuthentication yes"
+      line: "PasswordAuthentication no"
+
+  - name: set timezone to Europe/Moscow
+    timezone:
+      name: Europe/Moscow
+
+  - name: Ensure a locale exists
+    locale_gen:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - en_US.UTF-8
+      - ru_RU.UTF-8
+
+  - name: Install basic packages for Work
+    apt: name={{ item }} state=latest update_cache=yes
+    with_items:
+      - net-tools
+      - nano
+      - mc
+      - htop
+      - sysstat
+      - traceroute
+      - tree
+      - wget
+      - zip
+      - unzip
+      - iotop
+      - screen
+      - dnsutils
+      - ethtool
+      - sshfs
+      - apt-transport-https
+      - mercurial
+      - git
+
+  - name: Added GPG for Visual Studio Code
+    command: curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+
+  - name: Added Keyrings for Visual Studio Code
+    shell: sudo install -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/
+  
+  - name: Added Packages for Visual Studio Code
+    shell: sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+
+  - name: Update the repository cache and Install Visual Studio Code
+    apt:
+      name: code
+      state: installed
+      update_cache: yes
+
+  - name: Added repository nextcloud
+    apt_repository:
+      repo: deb http://ppa.launchpad.net/nextcloud-devs/client/ubuntu bionic main
+      state: present
+  
+  - name: Update the repository cache and Install nextcloud-client
+    apt:
+      name: nextcloud-client
+      state: installed
+      update_cache: yes
+  
+  - name: Download packege - skype 
+    command: wget https://repo.skype.com/latest/skypeforlinux-64.deb
+
+  - name: Dependency management
+    shell: sudo dpkg -i skypeforlinux-64.debpkg
+
+  - name: Install skype
+    shell: sudo apt install -f 
+
+  - name: Added repository libreoffice 
+    apt_repository:  
+      repo: deb http://ppa.launchpad.net/libreoffice/ppa/ubuntu bionic main
+      state: present
+  
+  - name: Update the repository cache and Install libreoffice
+    apt:
+      name: libreoffice
+      state: latest
+      update_cache: yes
+
+  - name: Check if DBeaver is installed
+    command: dpkg-query -W dbeaver
+    register: dbeaver_check_deb
+    failed_when: dbeaver_check_deb.rc > 1
+    changed_when: dbeaver_check_deb.rc == 1
+
+  - name: Download DBeaver
+    get_url: url="http://dbeaver.jkiss.org/files/dbeaver-ce_latest_amd64.deb" dest="/tmp/download-dbeaver-latest.deb"
+    when: dbeaver_check_deb.rc == 1
+
+  - name: Install DBeaver
+    apt: deb="/tmp/download-dbeaver-latest.deb"
+    when: dbeaver_check_deb.rc == 1
+
+  - name: Clean DBeaver deb file
+    file: path=/tmp/download-dbeaver-latest.deb state=absent
+
+  - name: Check if TeamViewer is installed
+    command: dpkg-query -W teamviewer
+    register: teamviewer_check_deb
+    failed_when: teamviewer_check_deb.rc > 1
+    changed_when: teamviewer_check_deb.rc == 1
+
+  - name: Install TeamViewer dependencies
+    apt: name={{ item }} state=latest update_cache=yes
+    with_items:
+      - libjpeg62
+      - libxinerama1
+      - libxrandr2
+      - libxtst6
+
+  - name: Download TeamViewer
+    get_url: url="http://download.teamviewer.com/download/teamviewer_i386.deb" dest="/tmp/download-teamviewer-latest.deb"
+    when: teamviewer_check_deb.rc == 1
+
+  - name: Install TeamViewer
+    apt: deb="/tmp/download-teamviewer-latest.deb"
+    when: teamviewer_check_deb.rc == 1
+
+  - name: Clean TeamViewer deb file
+    file: path=/tmp/download-teamviewer-latest.deb state=absent
+
+  - name: Added repository remmina
+    apt_repository:
+      repo: deb http://ppa.launchpad.net/remmina-ppa-team/remmina-next/ubuntu bionic main 
+      state: present
+  
+  - name: Update the repository cache and Install freerdp2-x11
+    apt:
+      name: freerdp2-x11
+      state: latest
+      update_cache: yes
+    
+  - name: Update the repository cache and Install remmina
+    apt: name={{ item }} state=latest update_cache=yes
+    with_items: 
+      - remmina
+      - remmina-plugin-rdp
+      - remmina-plugin-secret
+  
+  - name: Added repository vlc 
+    apt_repository:  
+      repo: deb http://ppa.launchpad.net/videolan/stable-daily/ubuntu xenial main
+      state: present
+  
+  - name: Update the repository cache and Install vlc
+    apt:
+      name: vlc
+      state: latest
+      update_cache: yes
+
+  - name: update apt cache
+    apt:
+      update_cache : yes
+
+  - name: add repository key 
+    shell: wget -qO- https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+
+  - name: Added repository wine
+    apt_repository:  
+      repo: deb http://dl.winehq.org/wine-builds/ubuntu bionic main 
+      state: present
+      update_cache: yes
+
+  - name: Update the repository cache and Install wine
+    apt:
+      name: winehq-stable
+      state: latest
+      update_cache: yes
+  
+  - name: Update the repository cache and Install keepassx
+    apt:
+      name: keepassx
+      state: latest
+      update_cache: yes
