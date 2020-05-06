@@ -2,6 +2,16 @@
 #### ansible-playbook site.yml -i hosts.yml
 
 Содержание папки - **roles**
+- journald
+- locale
+- timezone
+- docker
+- software
+- ssh
+- zabbix_install
+- zabbix_configure
+- reboot
+
 ```yaml
 ├── docker
 │   ├── handlers
