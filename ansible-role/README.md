@@ -13,13 +13,6 @@
 - reboot
 
 ```yaml
-├── docker
-│   ├── handlers
-│   │   └── main.yml
-│   ├── tasks
-│   │   └── main.yml
-│   └── vars
-│       └── main.yml
 ├── journald
 │   ├── tasks
 │   │   └── main.yml
@@ -34,8 +27,17 @@
 │   │   └── main.yml
 │   └── templates
 │       └── locale.j2
-├── reboot
+├── timezone
+│   ├── defaults
+│   │   └── main.yml
 │   └── tasks
+│       └── main.yml
+├── docker
+│   ├── handlers
+│   │   └── main.yml
+│   ├── tasks
+│   │   └── main.yml
+│   └── vars
 │       └── main.yml
 ├── software
 │   └── tasks
@@ -53,11 +55,11 @@
 │   │   └── main.yml
 │   └── vars copy
 │       └── main.yml
-├── timezone
-│   ├── defaults
+├── zabbix_install
+│   ├── handlers
 │   │   └── main.yml
-│   └── tasks
-│       └── main.yml
+│   ├── tasks
+│   │   └── main.yml
 ├── zabbix_configure
 │   ├── files
 │   │   ├── zabbix_container.conf
@@ -70,9 +72,7 @@
 │   │   └── zabbix_agentd.j2
 │   └── vars
 │       └── main.yml
-└── zabbix_install
-    ├── handlers
-    │   └── main.yml
-    └── tasks
-        └── main.yml
+├── reboot
+    └── tasks
+        └── main.yml
 ```
