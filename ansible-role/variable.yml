@@ -1,0 +1,6 @@
+---
+srv_1: remote
+user_to_connect: root
+
+srv_1_ip_address: 11.22.33.44
+srv_1_port_connect: 22

@@ -42,4 +42,7 @@ Config files for configuration system management
 **file - Programs_for_work.yml**
  - Установка необходимого ПО для работы на ОС Ubuntu 
 ----
+**folder - ansible-role**
+ - Установка необходимого ПО с помощью ролей
+----
 

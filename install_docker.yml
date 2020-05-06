@@ -1,6 +1,7 @@
 # Установка docker на OC Ubuntu (arch=amd64)
 ---
 - hosts: all
+  remote_user: linarnadyrov
   become: yes
   vars:
     docker_group: docker
@@ -65,7 +66,7 @@
   
   # sudo usermod -aG docker root
   - name: Add remoted "root" user to "docker" group
-    command: usermod -aG docker root
+    command: usermod -aG docker linarnadyrov
 
   # sudo apt-get install docker-compose=1.8.*
   #- name: Install docker-compose

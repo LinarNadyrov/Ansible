@@ -1,0 +1,6 @@
+---
+- name: Modifying config file /etc/systemd/journald.conf
+  lineinfile:
+    dest: "{{ path_dir_systemd }}{{ path_file_journald }}"
+    regexp: "{{ regexp }}"
+    line: "{{ string_line }}"

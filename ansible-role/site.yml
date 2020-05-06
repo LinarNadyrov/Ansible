@@ -1,0 +1,17 @@
+---
+- name: Configurations to "remote" host
+  vars_files:
+    - variable.yml
+  hosts: all
+  remote_user: "{{ user_to_connect }}" # Remote user
+  become: yes
+  roles:
+    - journald
+    - locale
+    - timezone
+    - docker
+    - software
+    - ssh
+    - zabbix_install
+    - zabbix_configure
+    - reboot

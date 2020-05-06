@@ -1,0 +1,11 @@
+---
+zabbix_path: /etc/zabbix/zabbix_agentd.d/
+
+destin_file: /etc/zabbix/
+destin_files: /etc/zabbix/zabbix_agentd.d/zabbix_container.conf
+destin_filess: /etc/zabbix/zabbix_agentd.d/zabbix_proxmox.conf
+
+mode_zabbix: 0655
+mode: 0644 
+owner: root 
+group: root

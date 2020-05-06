@@ -67,51 +67,51 @@
       - mercurial
       - git
 
-  - name: Added GPG for Visual Studio Code
-    command: curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+  # - name: Added GPG for Visual Studio Code
+  #   command: curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
 
-  - name: Added Keyrings for Visual Studio Code
-    shell: sudo install -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/
+  # - name: Added Keyrings for Visual Studio Code
+  #   shell: sudo install -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/
   
-  - name: Added Packages for Visual Studio Code
-    shell: sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+  # - name: Added Packages for Visual Studio Code
+  #   shell: sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
 
-  - name: Update the repository cache and Install Visual Studio Code
-    apt:
-      name: code
-      state: installed
-      update_cache: yes
+  # - name: Update the repository cache and Install Visual Studio Code
+  #   apt:
+  #     name: code
+  #     state: installed
+  #     update_cache: yes
 
-  - name: Added repository nextcloud
-    apt_repository:
-      repo: deb http://ppa.launchpad.net/nextcloud-devs/client/ubuntu bionic main
-      state: present
+  # - name: Added repository nextcloud
+  #   apt_repository:
+  #     repo: deb http://ppa.launchpad.net/nextcloud-devs/client/ubuntu bionic main
+  #     state: present
   
-  - name: Update the repository cache and Install nextcloud-client
-    apt:
-      name: nextcloud-client
-      state: installed
-      update_cache: yes
+  # - name: Update the repository cache and Install nextcloud-client
+  #   apt:
+  #     name: nextcloud-client
+  #     state: installed
+  #     update_cache: yes
   
-  - name: Download packege - skype 
-    command: wget https://repo.skype.com/latest/skypeforlinux-64.deb
+  # - name: Download packege - skype 
+  #   command: wget https://repo.skype.com/latest/skypeforlinux-64.deb
 
-  - name: Dependency management
-    shell: sudo dpkg -i skypeforlinux-64.debpkg
+  # - name: Dependency management
+  #   shell: sudo dpkg -i skypeforlinux-64.debpkg
 
-  - name: Install skype
-    shell: sudo apt install -f 
+  # - name: Install skype
+  #   shell: sudo apt install -f 
 
-  - name: Added repository libreoffice 
-    apt_repository:  
-      repo: deb http://ppa.launchpad.net/libreoffice/ppa/ubuntu bionic main
-      state: present
+  # - name: Added repository libreoffice 
+  #   apt_repository:  
+  #     repo: deb http://ppa.launchpad.net/libreoffice/ppa/ubuntu bionic main
+  #     state: present
   
-  - name: Update the repository cache and Install libreoffice
-    apt:
-      name: libreoffice
-      state: latest
-      update_cache: yes
+  # - name: Update the repository cache and Install libreoffice
+  #   apt:
+  #     name: libreoffice
+  #     state: latest
+  #     update_cache: yes
 
   - name: Check if DBeaver is installed
     command: dpkg-query -W dbeaver
@@ -130,81 +130,81 @@
   - name: Clean DBeaver deb file
     file: path=/tmp/download-dbeaver-latest.deb state=absent
 
-  - name: Check if TeamViewer is installed
-    command: dpkg-query -W teamviewer
-    register: teamviewer_check_deb
-    failed_when: teamviewer_check_deb.rc > 1
-    changed_when: teamviewer_check_deb.rc == 1
+  # - name: Check if TeamViewer is installed
+  #   command: dpkg-query -W teamviewer
+  #   register: teamviewer_check_deb
+  #   failed_when: teamviewer_check_deb.rc > 1
+  #   changed_when: teamviewer_check_deb.rc == 1
 
-  - name: Install TeamViewer dependencies
-    apt: name={{ item }} state=latest update_cache=yes
-    with_items:
-      - libjpeg62
-      - libxinerama1
-      - libxrandr2
-      - libxtst6
+  # - name: Install TeamViewer dependencies
+  #   apt: name={{ item }} state=latest update_cache=yes
+  #   with_items:
+  #     - libjpeg62
+  #     - libxinerama1
+  #     - libxrandr2
+  #     - libxtst6
 
-  - name: Download TeamViewer
-    get_url: url="http://download.teamviewer.com/download/teamviewer_i386.deb" dest="/tmp/download-teamviewer-latest.deb"
-    when: teamviewer_check_deb.rc == 1
+  # - name: Download TeamViewer
+  #   get_url: url="http://download.teamviewer.com/download/teamviewer_i386.deb" dest="/tmp/download-teamviewer-latest.deb"
+  #   when: teamviewer_check_deb.rc == 1
 
-  - name: Install TeamViewer
-    apt: deb="/tmp/download-teamviewer-latest.deb"
-    when: teamviewer_check_deb.rc == 1
+  # - name: Install TeamViewer
+  #   apt: deb="/tmp/download-teamviewer-latest.deb"
+  #   when: teamviewer_check_deb.rc == 1
 
-  - name: Clean TeamViewer deb file
-    file: path=/tmp/download-teamviewer-latest.deb state=absent
+  # - name: Clean TeamViewer deb file
+  #   file: path=/tmp/download-teamviewer-latest.deb state=absent
 
-  - name: Added repository remmina
-    apt_repository:
-      repo: deb http://ppa.launchpad.net/remmina-ppa-team/remmina-next/ubuntu bionic main 
-      state: present
+  # - name: Added repository remmina
+  #   apt_repository:
+  #     repo: deb http://ppa.launchpad.net/remmina-ppa-team/remmina-next/ubuntu bionic main 
+  #     state: present
   
-  - name: Update the repository cache and Install freerdp2-x11
-    apt:
-      name: freerdp2-x11
-      state: latest
-      update_cache: yes
+  # - name: Update the repository cache and Install freerdp2-x11
+  #   apt:
+  #     name: freerdp2-x11
+  #     state: latest
+  #     update_cache: yes
     
-  - name: Update the repository cache and Install remmina
-    apt: name={{ item }} state=latest update_cache=yes
-    with_items: 
-      - remmina
-      - remmina-plugin-rdp
-      - remmina-plugin-secret
+  # - name: Update the repository cache and Install remmina
+  #   apt: name={{ item }} state=latest update_cache=yes
+  #   with_items: 
+  #     - remmina
+  #     - remmina-plugin-rdp
+  #     - remmina-plugin-secret
   
-  - name: Added repository vlc 
-    apt_repository:  
-      repo: deb http://ppa.launchpad.net/videolan/stable-daily/ubuntu xenial main
-      state: present
+  # - name: Added repository vlc 
+  #   apt_repository:  
+  #     repo: deb http://ppa.launchpad.net/videolan/stable-daily/ubuntu xenial main
+  #     state: present
   
-  - name: Update the repository cache and Install vlc
-    apt:
-      name: vlc
-      state: latest
-      update_cache: yes
+  # - name: Update the repository cache and Install vlc
+  #   apt:
+  #     name: vlc
+  #     state: latest
+  #     update_cache: yes
 
-  - name: update apt cache
-    apt:
-      update_cache : yes
+  # - name: update apt cache
+  #   apt:
+  #     update_cache : yes
 
-  - name: add repository key 
-    shell: wget -qO- https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+  # - name: add repository key 
+  #   shell: wget -qO- https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
 
-  - name: Added repository wine
-    apt_repository:  
-      repo: deb http://dl.winehq.org/wine-builds/ubuntu bionic main 
-      state: present
-      update_cache: yes
+  # - name: Added repository wine
+  #   apt_repository:  
+  #     repo: deb http://dl.winehq.org/wine-builds/ubuntu bionic main 
+  #     state: present
+  #     update_cache: yes
 
-  - name: Update the repository cache and Install wine
-    apt:
-      name: winehq-stable
-      state: latest
-      update_cache: yes
+  # - name: Update the repository cache and Install wine
+  #   apt:
+  #     name: winehq-stable
+  #     state: latest
+  #     update_cache: yes
   
-  - name: Update the repository cache and Install keepassx
-    apt:
-      name: keepassx
-      state: latest
-      update_cache: yes
+  # - name: Update the repository cache and Install keepassx
+  #   apt:
+  #     name: keepassx
+  #     state: latest
+  #     update_cache: yes

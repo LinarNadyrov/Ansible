@@ -1,0 +1,6 @@
+---
+path_dir_systemd: "/etc/systemd/"
+path_file_journald: "journald.conf"
+
+regexp: "^#Storage=auto"
+string_line: "Storage=persistent"

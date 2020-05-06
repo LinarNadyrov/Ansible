@@ -1,0 +1,24 @@
+---
+- name: Creates directory = "{{ ssh_path }}" 
+  file:
+    path: "{{ ssh_path }}"
+    state: directory
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: "{{ mode }}"
+
+- name: Copy authorized_keys in directory = "{{ ssh_path }}"
+  copy: 
+    src: authorized_keys 
+    dest: "{{ ssh_path }}"
+    mode:  "{{ mode }}" 
+    owner: "{{ owner }}" 
+    group: "{{ group }}"
+  register: authorized_keys
+
+- name: Use a safer sshd_config
+  template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
+            owner=root group=root mode=0644
+            validate='sshd -tf %s'
+  notify:
+    - reload ssh

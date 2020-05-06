@@ -1,0 +1,6 @@
+---
+ssh_path: /root/.ssh/
+
+mode: 0600 
+owner: root 
+group: root

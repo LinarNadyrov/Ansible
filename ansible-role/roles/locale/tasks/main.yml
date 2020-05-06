@@ -1,0 +1,12 @@
+---
+- name: Install locales
+  apt:
+    state: present
+    pkg:
+      - locales
+
+- name: Update default locale
+  template: src=locale.j2 dest=/etc/default/locale owner=root group=root mode=0644
+
+- name: Locale gen
+  locale_gen: name="{{ locale_env.lang }}" state=present
